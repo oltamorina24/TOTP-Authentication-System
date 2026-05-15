@@ -13,3 +13,23 @@ def run_client():
         
         if username.lower() == 'exit':
             break
+        try:
+            real_otp = generate_totp(username)
+            print(f"(Your 2FA device shows: {real_otp})")
+            
+            otp_input = input("Enter your TOTP: ")
+            payload = f"{username};{otp_input}"
+            encrypted_message = encrypt_payload(payload)
+
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                s.connect((HOST, PORT))
+                s.sendall(encrypted_message)
+                
+                response = s.recv(1024).decode()
+                print(response)
+
+        except Exception as e:
+            print(f"Error: {str(e)}")
+
+if __name__ == "__main__":
+    run_client()
