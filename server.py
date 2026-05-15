@@ -29,3 +29,18 @@ def start_server():
                 print(f"Authentication successful for user: {username}")
                 response = "Authentication successful. You now have access to the system."
                 write_log(username, "SUCCESS") 
+            else:
+                print(f"Authentication failed for user: {username}")
+                response = "Authentication failed. Invalid or expired code."
+                write_log(username, "FAILED") 
+            client_sock.send(response.encode())
+            
+        except Exception as e:
+            print(f"Error processing request for {username}: {e}")
+        finally:
+            client_sock.close()
+            print(f"Connection closed for {username}. Waiting for next request...")
+            print("-" * 40)
+
+if __name__ == "__main__":
+    start_server()
