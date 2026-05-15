@@ -20,3 +20,12 @@ def start_server():
             encrypted_data = client_sock.recv(1024)
             if not encrypted_data:
                 continue
+            decrypted_data = decrypt_payload(encrypted_data)
+            username, otp = decrypted_data.split(";")
+            
+            print(f"\nReceived authentication request for user: {username}")
+            print(f"TOTP provided: {otp}")
+            if verify_totp(username, otp):
+                print(f"Authentication successful for user: {username}")
+                response = "Authentication successful. You now have access to the system."
+                write_log(username, "SUCCESS") 
